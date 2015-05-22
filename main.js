@@ -47,9 +47,6 @@ function linesToArray(str) {
 
 var sampleQuestion = "         3) Who determined the exact speed of light?\n            a. Albert Einstein\n*b. Albert Michelson\n            c. Thomas Edison\nd. Guglielmo Marconi"
 
-var ls =l9
-
-
 
 // console.log("Hello World!");
 // console.log(linesToArray(sampleQuestion));
