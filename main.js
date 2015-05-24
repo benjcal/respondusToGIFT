@@ -1,38 +1,23 @@
-// Sample Multiple Choice question
-/*	3) Who determined the exact speed of light?
+#!/usr/bin/env node
+"use strict";
 
-			a. Albert Einstein
-			*b. Albert Michelson
-			c. Thomas Edison
-			d. Guglielmo Marconi
-			*/
+var fs = require('fs');
 
-/******** RegEx ********
-RegEx to match the question number
-		var __newVar__20150522181658327136 = ;
-		/(\d|\d\d)(\.__newVar__20150522181658327136|\))/
+var inputFile = fs.readFileSync(process.argv[2], 'utf8'); //process.argv[2] is the file input
 
-RegEx to match the answers
-		/[a-z](\)|\.)/i
-
-RegEx to match the correct answer
-		/\*[a-z](\)|\.)/i
-
-		**************************/
-
-// var patt = /(\d|\d\d)(\.|\))/; // RegEx to match the question number
-
-// Function to delete unwanted white space from the begining of the line
-function removeSpace(str) {
-    var counter = 0;
-    while (/\s/.test(str[counter])) {
-        counter++;
+function removeSpace(str) { // remove whitespace from beginning and end of the line
+    var start = 0;
+    var end = str.length;
+    while (/\s/.test(str[start])) {
+        start++;
     }
-    return str.slice(counter, str.length)
+    while (/\s/.test(str[end - 1])) {
+        end--;
+    }
+    return str.slice(start, end);
 }
 
-// Function to separate string into lines
-function linesToArray(str) {
+function linesToArray(str) { // separate input string into an array of lines
     var line = "";
     var lines = [];
     for (var i = 0; i <= str.length - 1; i++) {
@@ -41,45 +26,47 @@ function linesToArray(str) {
             lines.push(removeSpace(line.slice(0, line.length - 1)));
             line = "";
         }
-    };
+    }
     return lines;
 }
 
-var sampleQuestion = "         3) Who determined the exact speed of light?\n            a. Albert Einstein\n*b. Albert Michelson\n            c. Thomas Edison\nd. Guglielmo Marconi"
+function parseLines(linesArray) {
 
+    var isTitle = /(\d|\d\d)(\.|\))/; // match the question number, ej. '3)' or '64.'
+    var isAnswer = /[a-z](\)|\.)/i; // match answers, ej. 'a.' or 'D)'
+    var isCorrectAnswer = /\*[a-z](\)|\.)/i; // match correct answer(s), ej. '*B.' or '*a)'
 
-// console.log("Hello World!");
-// console.log(linesToArray(sampleQuestion));
+    var str = [];
 
-var lineArray = linesToArray(sampleQuestion);
+    for (var i = 0; i <= linesArray.length - 1; i++) {
+        if (isTitle.test(linesArray[i])) {
 
-var isTitle = /(\d|\d\d)(\.|\))/;
-var isAnswer = /[a-z](\)|\.)/i;
-var isCorrectAnswer = /\*[a-z](\)|\.)/i;
+        	str.push(linesArray[i]);
 
-
-for (var i = 0; i <= lineArray.length - 1; i++) {
-    if (isTitle.test(lineArray[i])) {
-        console.log(lineArray[i] + '\t\tis title')
-    }
-    if (isAnswer.test(lineArray[i])) {
-        if (isCorrectAnswer.test(lineArray[i])) {
-            console.log(lineArray[i] + '\t\tis correct answer')
-            continue;
+            console.log(linesArray[i] + '\tis title');
         }
-        console.log(lineArray[i] + '\t\tis answer')
+        if (isAnswer.test(linesArray[i])) {
+            if (isCorrectAnswer.test(linesArray[i])) {
+                // console.log(linesArray[i] + '\tis correct answer');
+                continue;
+            }
+            // console.log(linesArray[i] + '\tis answer');
+        }
     }
-};
+console.log();
+}
 
-// console.log(isAnswer.test(lineArray[2]));
+var linesArray = linesToArray(inputFile);
 
-// console.log(isAnswer.exec(lineArray[1]));
+parseLines(linesArray);
 
-var s = 'a. l thisi s e. ';
-var y = isAnswer.exec(s)
+
+// fs.writeFileSync(process.argv[2] += '.gift', "Hello!");
+
+
 
 // console.log(s.slice(y["index"],s.length - 1));
-console.log(s.slice(y[0].length, s.length)); // print the string minus the length of the RegEx match
+// console.log(s.slice(y[0].length, s.length)); // print the string minus the length of the RegEx match
 
 // for (var i = 0; i <= array.length - 1; i++) {
 // removeSpace(linesToArray(sampleQuestion)[]);
