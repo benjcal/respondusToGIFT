@@ -1,21 +1,47 @@
 #!/usr/bin/env node
 "use strict";
 
-var fs = require('fs');
 
-var inputFile = fs.readFileSync(process.argv[2], 'utf8'); //process.argv[2] is the file input
 
-function removeSpace(str) { // remove whitespace from beginning and end of the line
+// Add methods to String.prototype
+String.prototype.isNumber = function() {
+    var isNumberRegEx = /^(\d|\d\d)(\.|\))/;
+    return isNumberRegEx.test(this);
+}
+String.prototype.isLetter = function() {
+    var isLetterRegEx = /^[a-z](\)|\.)/i;
+    return isLetterRegEx.test(this);
+}
+String.prototype.isCorrect = function() {
+    var isCorrectRegEx = /^\*[a-z](\)|\.)/i;
+    return isCorrectRegEx.test(this);
+}
+String.prototype.isAnswerLine = function() {
+    var isCorrectRegEx = /^answer\:/i;
+    return isCorrectRegEx.test(this);
+}
+String.prototype.isTypeLine = function() {
+    var isCorrectRegEx = /^type\:/i;
+    return isCorrectRegEx.test(this);
+}
+String.prototype.removeExtraSpace = function() {
     var start = 0;
-    var end = str.length;
-    while (/\s/.test(str[start])) {
+    var end = this.length;
+    while (/\s/.test(this[start])) {
         start++;
     }
-    while (/\s/.test(str[end - 1])) {
+    while (/\s/.test(this[end - 1])) {
         end--;
     }
-    return str.slice(start, end);
+    return this.slice(start, end);
 }
+
+var fs = require('fs');
+
+//process.argv[2] is the first argument
+// var inputFile = fs.readFileSync(process.argv[2], 'utf8');
+var inputFile = fs.readFileSync("sampleQuestion.txt", 'utf8');
+
 
 function linesToArray(str) { // separate input string into an array of lines
     var line = "";
@@ -23,12 +49,16 @@ function linesToArray(str) { // separate input string into an array of lines
     for (var i = 0; i <= str.length - 1; i++) {
         line += str[i];
         if (/\n/.test(str[i])) { // test for new line characters
-            lines.push(removeSpace(line.slice(0, line.length - 1)));
+            line = line.removeExtraSpace();
+            lines.push(line.slice(0, line.length - 1));
             line = "";
         }
     }
     return lines;
 }
+
+
+
 
 function parseLines(linesArray) {
 
@@ -41,7 +71,7 @@ function parseLines(linesArray) {
     for (var i = 0; i <= linesArray.length - 1; i++) {
         if (isTitle.test(linesArray[i])) {
 
-        	str.push(linesArray[i]);
+            str.push(linesArray[i]);
 
             console.log(linesArray[i] + '\tis title');
         }
@@ -53,13 +83,22 @@ function parseLines(linesArray) {
             // console.log(linesArray[i] + '\tis answer');
         }
     }
-console.log();
+    console.log();
 }
+
+
 
 var linesArray = linesToArray(inputFile);
 
 parseLines(linesArray);
 
+// console.log(linesArray[0].isNumber());
+
+var s = "     Hello!"
+
+s = s.removeExtraSpace();
+
+console.log(s);
 
 // fs.writeFileSync(process.argv[2] += '.gift', "Hello!");
 
