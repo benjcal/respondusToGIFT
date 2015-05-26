@@ -42,7 +42,6 @@ var fs = require('fs');
 // var inputFile = fs.readFileSync(process.argv[2], 'utf8');
 var inputFile = fs.readFileSync("sampleQuestion.txt", 'utf8');
 
-
 function linesToArray(str) { // separate input string into an array of lines
     var line = "";
     var lines = [];
@@ -57,31 +56,28 @@ function linesToArray(str) { // separate input string into an array of lines
     return lines;
 }
 
-
-
-
 function parseLines(linesArray) {
 
-    var isTitle = /(\d|\d\d)(\.|\))/; // match the question number, ej. '3)' or '64.'
-    var isAnswer = /[a-z](\)|\.)/i; // match answers, ej. 'a.' or 'D)'
-    var isCorrectAnswer = /\*[a-z](\)|\.)/i; // match correct answer(s), ej. '*B.' or '*a)'
+    // var isTitle = /(\d|\d\d)(\.|\))/; // match the question number, ej. '3)' or '64.'
+    // var isAnswer = /[a-z](\)|\.)/i; // match answers, ej. 'a.' or 'D)'
+    // var isCorrectAnswer = /\*[a-z](\)|\.)/i; // match correct answer(s), ej. '*B.' or '*a)'
 
     var str = [];
 
     for (var i = 0; i <= linesArray.length - 1; i++) {
-        if (isTitle.test(linesArray[i])) {
+        if (linesArray[i].isNumber()) {
 
             str.push(linesArray[i]);
 
             console.log(linesArray[i] + '\tis title');
         }
-        if (isAnswer.test(linesArray[i])) {
-            if (isCorrectAnswer.test(linesArray[i])) {
-                // console.log(linesArray[i] + '\tis correct answer');
-                continue;
-            }
-            // console.log(linesArray[i] + '\tis answer');
+        if (linesArray[i].isLetter()) {
+            console.log(linesArray[i] + '\tis answer');
         }
+        if (linesArray[i].isCorrect()) {
+            console.log(linesArray[i] + '\tis correct answer');
+        }
+
     }
     console.log();
 }
