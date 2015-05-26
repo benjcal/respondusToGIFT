@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 "use strict";
 
-
-
 // Add methods to String.prototype
 String.prototype.isNumber = function() {
-    var isNumberRegEx = /^(\d|\d\d)(\.|\))/;
+    var isNumberRegEx = /^(\d|\d\d)(\.|\))/;    // this is limited to 99
     return isNumberRegEx.test(this);
 }
 String.prototype.isLetter = function() {
@@ -17,12 +15,16 @@ String.prototype.isCorrect = function() {
     return isCorrectRegEx.test(this);
 }
 String.prototype.isAnswerLine = function() {
-    var isCorrectRegEx = /^answer\:/i;
-    return isCorrectRegEx.test(this);
+    var isAnswerRegEx = /^answer\:/i;
+    return isAnswerRegEx.test(this);
 }
 String.prototype.isTypeLine = function() {
-    var isCorrectRegEx = /^type\:/i;
-    return isCorrectRegEx.test(this);
+    var isTypeRegEx = /^type\:/i;
+    return isTypeRegEx.test(this);
+}
+String.prototype.isFeedbackLine = function() {
+    var isFeedbackRegEx = /^\@/;
+    return isFeedbackRegEx.test(this);
 }
 String.prototype.removeExtraSpace = function() {
     var start = 0;
@@ -33,7 +35,8 @@ String.prototype.removeExtraSpace = function() {
     while (/\s/.test(this[end - 1])) {
         end--;
     }
-    return this.slice(start, end);
+
+    return this.slice(start, end + 1);
 }
 
 var fs = require('fs');
@@ -44,57 +47,62 @@ var inputFile = fs.readFileSync("sampleQuestion.txt", 'utf8');
 
 function linesToArray(str) { // separate input string into an array of lines
     var line = "";
-    var lines = [];
+    var tempLines = [];
+    var lines= [];
     for (var i = 0; i <= str.length - 1; i++) {
         line += str[i];
         if (/\n/.test(str[i])) { // test for new line characters
             line = line.removeExtraSpace();
-            lines.push(line.slice(0, line.length - 1));
+            tempLines.push(line.slice(0, line.length - 1));
             line = "";
+        }
+    }
+    for (var i = 0; i < tempLines.length; i++) {
+        if (!(/\s/.test(tempLines[i]))) {
+            continue;
+        }
+        else {
+            lines.push(tempLines[i])
         }
     }
     return lines;
 }
 
-function parseLines(linesArray) {
-
-    // var isTitle = /(\d|\d\d)(\.|\))/; // match the question number, ej. '3)' or '64.'
-    // var isAnswer = /[a-z](\)|\.)/i; // match answers, ej. 'a.' or 'D)'
-    // var isCorrectAnswer = /\*[a-z](\)|\.)/i; // match correct answer(s), ej. '*B.' or '*a)'
-
-    var str = [];
-
-    for (var i = 0; i <= linesArray.length - 1; i++) {
-        if (linesArray[i].isNumber()) {
-
-            str.push(linesArray[i]);
-
-            console.log(linesArray[i] + '\tis title');
-        }
-        if (linesArray[i].isLetter()) {
-            console.log(linesArray[i] + '\tis answer');
-        }
-        if (linesArray[i].isCorrect()) {
-            console.log(linesArray[i] + '\tis correct answer');
-        }
-
-    }
-    console.log();
-}
+// function parseLines(linesArray) {
+//
+//     // var isTitle = /(\d|\d\d)(\.|\))/; // match the question number, ej. '3)' or '64.'
+//     // var isAnswer = /[a-z](\)|\.)/i; // match answers, ej. 'a.' or 'D)'
+//     // var isCorrectAnswer = /\*[a-z](\)|\.)/i; // match correct answer(s), ej. '*B.' or '*a)'
+//
+//     var str = [];
+//
+//     for (var i = 0; i <= linesArray.length - 1; i++) {
+//         if (linesArray[i].isNumber()) {
+//
+//             str.push(linesArray[i]);
+//
+//             // console.log(linesArray[i] + '\tis title');
+//         }
+//         if (linesArray[i].isLetter()) {
+//             // console.log(linesArray[i] + '\tis answer');
+//         }
+//         if (linesArray[i].isCorrect()) {
+//             // console.log(linesArray[i] + '\tis correct answer');
+//         }
+//
+//     }
+//     // console.log();
+// }
 
 
 
 var linesArray = linesToArray(inputFile);
 
-parseLines(linesArray);
 
-// console.log(linesArray[0].isNumber());
+console.log(linesArray);
 
-var s = "     Hello!"
 
-s = s.removeExtraSpace();
 
-console.log(s);
 
 // fs.writeFileSync(process.argv[2] += '.gift', "Hello!");
 
